@@ -2,6 +2,7 @@ const express = require('express')
 const hbs = require('hbs');
 const fs = require('fs')
 
+const port = process.env.PORT||8000
 var app = express();
 
 hbs.registerPartials(__dirname + '/views/partials');
@@ -12,10 +13,10 @@ hbs.registerHelper('getCurrentYear',()=>{
 hbs.registerHelper('screamIt',(text)=>{
     return text.toUpperCase();
 })
+
 app.set('view engine', 'hbs');
 
-app.use(express.static(__dirname + '/public')) //Take the middleware as function
-//Express.static() take absolute path
+
 
 app.use((req, res, next)=>{
     var now = new Date().toString();
@@ -29,9 +30,13 @@ app.use((req, res, next)=>{
     next();
 })
 
-app.use((req, res, next)=>{
-    res.render('maintenance.hbs')
-})
+// app.use((req, res, next)=>{
+//     res.render('maintenance.hbs')
+// })
+
+app.use(express.static(__dirname + '/public')) //Take the middleware as function
+//Express.static() take absolute path
+
 
 app.get('/',(req,res)=>{
     res.render('home.hbs',{
@@ -52,4 +57,10 @@ app.get('/bad',(req,res)=>{
         not : 'not possible'
     })
 })
-app.listen(8000);
+
+app.get('/projects', (req, res)=>{
+    res.render('projects.hbs',{
+        pageTitle: 'Projects'
+    })
+});
+app.listen(port);
